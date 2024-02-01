@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useState } from 'react'
+import { useForm } from 'react-hook-form';
 
 function TopForm() {
 
@@ -57,19 +58,6 @@ function TopForm() {
           </ButtonGroup>
             </Form></div>
       }
-      {!showForm && 
-      <div>
-      <h4>Name</h4>
-      <p>{name}</p>
-      <h4>Email</h4>
-      <p>{email}</p>
-      <h4>Phone Number</h4>
-      <p>{phone}</p>
-      <ButtonGroup aria-label="change buttons">
-          <Button variant="primary" type="button" onClick={() => setShowForm(true)}>Edit</Button>
-          <Button variant="primary" type="submit" form="genInfo" onClick={() => setShowForm(false)} disabled>Submit</Button>
-          </ButtonGroup>
-      </div>}
         </div>
       );
     }
