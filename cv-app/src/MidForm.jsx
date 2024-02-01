@@ -48,7 +48,7 @@ const FormSection = ({ index, schoolName, major, startDate, endDate, isVisible, 
         </div>
       )}
       <button onClick={toggleVisibility}>
-        {isVisible ? 'Hide' : 'Show'} Section {index + 1}
+        {isVisible ? 'Hide' : 'Show'} 
       </button>
     </div>
   );
