@@ -5,21 +5,33 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
-import React from 'react';
-
-const FormSection = ({ index, schoolName, major, startDate, endDate, isVisible, toggleVisibility, onSchoolChange, onMajorChange, onStartChange, onEndChange }) => (
+const FormSection = ({
+    index,
+    schoolName,
+    major,
+    startDate,
+    endDate,
+    onSchoolChange,
+    onMajorChange,
+    onStartChange,
+    onEndChange,
+    changeFormVisibility,
+    isFormVisible,
+    onRemove
+  }) => (
     <div>
-      {isVisible && (
-        <div>
-        <Form.Label>School</Form.Label>
+      {isFormVisible ? (
+        <>
+          {/* Form inputs */}
+          <Form.Label>School</Form.Label>
           <input
-          type="text"
-          className="form-control"
-          name="schoolName"
-          placeholder="School Name"
+            type="text"
+            className="form-control"
+            name="schoolName"
+            placeholder="School Name"
             value={schoolName}
             onChange={e => onSchoolChange(index, e.target.value)}
-          />
+          required/>
           <Form.Label>College Major</Form.Label>
           <input
             type="text"
@@ -28,7 +40,7 @@ const FormSection = ({ index, schoolName, major, startDate, endDate, isVisible, 
             placeholder="College Major"
             value={major}
             onChange={e => onMajorChange(index, e.target.value)}
-          />
+          required/>
           <Form.Label>Start Date</Form.Label>
           <input
             type="date"
@@ -45,11 +57,25 @@ const FormSection = ({ index, schoolName, major, startDate, endDate, isVisible, 
             value={endDate}
             onChange={e => onEndChange(index, e.target.value)}
           />
+        </>
+      ) : (
+        <div>
+          {/* HTML representation of the form data */}
+          <h4>School</h4>
+          <p>{schoolName}</p>
+          <h4>Major</h4>
+          <p>{major}</p>
+          <h4>Start Date</h4>
+          <p>{startDate}</p>
+          <h4>End Date: {endDate}</h4>
+          <p></p>
         </div>
       )}
-      <button onClick={toggleVisibility}>
-        {isVisible ? 'Hide' : 'Show'} 
-      </button>
+      <ButtonGroup aria-label="Form actions">
+      <Button variant="primary" onClick={() => changeFormVisibility(index, true)} disabled={isFormVisible}>Edit</Button>
+        <Button variant="primary" onClick={() => changeFormVisibility(index, false)} disabled={!isFormVisible}>Submit</Button>
+      </ButtonGroup>
+      <Button variant="danger" onClick={() => onRemove(index)}>Remove</Button>
     </div>
   );
 
@@ -58,21 +84,25 @@ function MidForm() {
 
   const handleAddFields = () => {
     const newField = {
-        id: fields.length,
-        isVisible: true,
+        id: uuidv4(),
+        isFormVisible: true,
         schoolName: '',
         major: '',
-        startDate: '',
-        endDate: ''
+        startDate: '2024-01-01',
+        endDate: '2024-01-01'
+    };
+    setFields([...fields, newField]); // Fixed: remove the extra braces around newField
+};
 
-      };
-    setFields([...fields, { newField}]);
+  const changeFormVisibility = (index, visible) => {
+    setFields(fields.map((field, idx) => 
+      idx === index ? { ...field, isFormVisible: visible } : field
+    ));
   };
 
-  const toggleVisibility = id => {
-    setFields(fields.map(field => 
-      field.id === id ? { ...field, isVisible: !field.isVisible } : field
-    ));
+  const handleRemoveSection = index => {
+    // Filter out the section that matches the index
+    setFields(fields.filter((_, idx) => idx !== index));
   };
 
   const handleSchoolChange = (index, newValue) => {
@@ -89,20 +119,14 @@ function MidForm() {
 
   const handleStartChange = (index, newValue) => {
     setFields(fields.map((field, idx) => 
-      idx === index ? { ...field, major: newValue } : field
+      idx === index ? { ...field, startDate: newValue } : field
     ));
   };
 
   const handleEndChange = (index, newValue) => {
     setFields(fields.map((field, idx) => 
-      idx === index ? { ...field, major: newValue } : field
+      idx === index ? { ...field, endDate: newValue } : field
     ));
-  };
-
-  const handleRemoveFields = (index) => {
-    const values = [...fields];
-    values.splice(index, 1);
-    setFields(values);
   };
 
   const handleSubmit = (event) => {
@@ -113,7 +137,7 @@ function MidForm() {
 
   return (
     <div>
-      <button onClick={handleAddFields}>Add Section</button>
+        <h2>Educational Information</h2>
       {fields.map((field, index) => (
         <div key={field.id}>
         <FormSection
@@ -123,28 +147,19 @@ function MidForm() {
           major={field.major}
           startDate={field.startDate}
           endDate={field.endDate}
-          isVisible={field.isVisible}
-          toggleVisibility={() => toggleVisibility(field.id)}
+          isFormVisible={field.isFormVisible}
+          changeFormVisibility={changeFormVisibility}
           onSchoolChange={handleSchoolChange}
           onMajorChange={handleMajorChange}
           onStartChange={handleStartChange}
           onEndChange={handleEndChange}
+          onRemove={handleRemoveSection}
+          onSubmit={handleSubmit}
         />
-        <div class="d-flex flex-column align-items-center">
-<ButtonGroup aria-label="change buttons">
-<Button variant="primary" type="button" disabled>Edit</Button>
-<Button variant="primary" type="submit" onClick={() => toggleVisibility(index)}>Submit</Button>
-</ButtonGroup>
-<button
-  type="button"
-  className="btn btn-danger mt-2"
-  onClick={() => handleRemoveFields(index)}
->
-  Remove
-</button>
-</div>
         </div>
       ))}
+      {}
+      <button onClick={handleAddFields}>Add Section</button>
     </div>
   );
 }
