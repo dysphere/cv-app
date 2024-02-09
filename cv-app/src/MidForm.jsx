@@ -67,15 +67,17 @@ const FormSection = ({
           <p>{major}</p>
           <h4>Start Date</h4>
           <p>{startDate}</p>
-          <h4>End Date: {endDate}</h4>
-          <p></p>
+          <h4>End Date</h4>
+          <p>{endDate}</p>
         </div>
       )}
+      <div>
       <ButtonGroup aria-label="Form actions">
       <Button variant="primary" onClick={() => changeFormVisibility(index, true)} disabled={isFormVisible}>Edit</Button>
         <Button variant="primary" onClick={() => changeFormVisibility(index, false)} disabled={!isFormVisible}>Submit</Button>
       </ButtonGroup>
       <Button variant="danger" onClick={() => onRemove(index)}>Remove</Button>
+      </div>
     </div>
   );
 
